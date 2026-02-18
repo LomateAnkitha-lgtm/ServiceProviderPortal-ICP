@@ -2,6 +2,8 @@ package com.dtt.organization.exception;
 
 import com.dtt.organization.util.ApiResponse;
 import com.dtt.organization.util.ValidationException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,7 +14,8 @@ import java.util.Map;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
-
+    private static final String CLASS = "GlobalExceptionHandler";
+    private static final Logger logger = LoggerFactory.getLogger(GlobalExceptionHandler.class);
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ApiResponse<Map<String, String>>> handleDtoValidation(
             MethodArgumentNotValidException ex) {
@@ -39,7 +42,7 @@ public class GlobalExceptionHandler {
     public ResponseEntity<ApiResponse<Void>> handleException(
             Exception ex) {
 
-        ex.printStackTrace();
+        logger.error("Unexpected exception", ex);
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
                 .body(new ApiResponse<>(false, "Something went wrong", null));
     }
